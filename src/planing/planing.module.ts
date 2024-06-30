@@ -8,13 +8,16 @@ import { StoryController } from './story/story.controller';
 import { StoryService } from './story/story.service';
 import { VotingService } from './voting/voting.service';
 import { VotingController } from './voting/voting.controller';
+import { PlaningGateway } from './planing.gateway';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     MongooseModule.forFeature([{ name: Planing.name, schema: PlaningSchema }]),
     MongooseModule.forFeature([{ name: Story.name, schema: StorySchema }]),
   ],
   controllers: [PlaningController, StoryController, VotingController],
-  providers: [PlaningService, StoryService, VotingService],
+  providers: [PlaningService, StoryService, VotingService, PlaningGateway],
 })
 export class PlaningModule {}

@@ -44,4 +44,12 @@ export class AuthService {
       accessToken: this.jwtService.sign({ sub: user._id }),
     };
   }
+
+  async getUserByToken(token: string) {
+    const payload = await this.jwtService.verifyAsync(token, {
+      secret: 'secretKey',
+    });
+    const user = await this.userService.findOne(payload.sub);
+    return user;
+  }
 }

@@ -27,8 +27,10 @@ export class VotingController {
 
   @UseResponse(Story)
   @Put()
-  changeStatus(@Param('id') id: string, @Body() dto: StatusVotingDto) {
-    return this.votingService.updateStatus(id, dto.status);
+  async changeStatus(@Param('id') id: string, @Body() dto: StatusVotingDto) {
+    const story = await this.votingService.findCurrent(id);
+    if (!story) return null;
+    return this.votingService.updateStatus(story, dto.status);
   }
 
   @UseResponse(Story)

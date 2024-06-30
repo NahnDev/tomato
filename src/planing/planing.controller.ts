@@ -8,18 +8,14 @@ import {
   Put,
 } from '@nestjs/common';
 import { PlaningService } from './planing.service';
-import {
-  CreatePlaningDto,
-  UpdatePlaningDto,
-  StatusVotingDto,
-} from './dto/planing.dto';
+import { CreatePlaningDto, UpdatePlaningDto } from './dto/planing.dto';
 import { RequestUser } from 'src/decorator/RequestUser';
 import { User } from 'src/users/schemas/user.schema';
 import { UseResponse } from 'src/decorator/UseResponse';
 import { Planing } from './schemas/planing.schema';
 import { UseJwtGuard } from 'src/decorator/UseJwtGuard';
-import { Story } from './schemas/story.schema';
 import { VotingService } from './voting/voting.service';
+import UsePlaningEvent from './decorator/UsePlaningUserEvent';
 
 @UseJwtGuard()
 @Controller('planings')
@@ -52,6 +48,7 @@ export class PlaningController {
 
   @Put(':id')
   @UseResponse(Planing)
+  @UsePlaningEvent()
   update(@Param('id') id: string, @Body() dto: UpdatePlaningDto) {
     return this.planingService.update(id, dto);
   }
@@ -59,17 +56,5 @@ export class PlaningController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.planingService.remove(id);
-  }
-
-  @Get(':id/voteing')
-  @UseResponse(Story)
-  vote(@Param('id') id: string) {
-    return this.votingService.findCurrent(id);
-  }
-
-  @Put(':id/voteing')
-  @UseResponse(Story)
-  updateVote(@Param('id') id: string, @Body() dto: StatusVotingDto) {
-    return this.votingService.updateStatus(id, dto.status);
   }
 }

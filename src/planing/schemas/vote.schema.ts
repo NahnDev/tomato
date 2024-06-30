@@ -1,13 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { SchemaTypes } from 'mongoose';
-import { User } from 'src/users/schemas/user.schema';
 import * as autopopulate from 'mongoose-autopopulate';
 
 @Schema()
 export default class Vote {
   @Expose()
-  @Type(() => User)
+  @Transform(({ value }) => value.toString())
   @Prop({
     required: true,
     type: SchemaTypes.ObjectId,
