@@ -7,11 +7,19 @@ import { AuthModule } from './auth/auth.module';
 import { PlaningModule } from './planing/planing.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventModule } from './event/event.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     EventEmitterModule.forRoot({ wildcard: true }),
-    MongooseModule.forRoot('mongodb://localhost:27017/tomato'),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    }),
     UsersModule,
     AuthModule,
     PlaningModule,
