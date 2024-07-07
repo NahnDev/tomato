@@ -6,6 +6,8 @@ import { Public } from 'src/decorator/Public';
 import { UseResponse } from 'src/decorator/UseResponse';
 import { LoginResponseDto } from './dto/login.response.dto';
 import { UseJwtGuard } from 'src/decorator/UseJwtGuard';
+import { RequestUser } from 'src/decorator/RequestUser';
+import { User } from 'src/users/schemas/user.schema';
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +29,7 @@ export class AuthController {
   @Post('auto-login')
   @UseResponse(LoginResponseDto)
   @UseJwtGuard()
-  async remember(@Request() req) {
-    return this.authService.getCredentials(req.user);
+  async remember(@RequestUser() user: User) {
+    return this.authService.getCredentials(user);
   }
 }

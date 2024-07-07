@@ -8,12 +8,15 @@ import {
   UpdateStoryDto,
 } from '../dto/story.dto';
 import { Planing } from '../schemas/planing.schema';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { VotingEvent } from '../decorator/UseVotingEvent';
 
 @Injectable()
 export class StoryService {
   constructor(
     @InjectModel(Story.name) private readonly storyModel: Model<Story>,
     @InjectModel(Planing.name) private readonly planingModel: Model<Planing>,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   findOne(_id: string) {
@@ -21,7 +24,7 @@ export class StoryService {
   }
 
   findByPlaning(planing: string) {
-    return this.storyModel.find({ planing }).exec();
+    return this.storyModel.find({ planing }).sort({ order: 1 }).exec();
   }
 
   async create(dto: CreateStoryDto) {
@@ -36,7 +39,11 @@ export class StoryService {
   }
 
   async update(_id: string, dto: UpdateStoryDto) {
-    return this.storyModel.findOneAndUpdate({ _id }, dto, { new: true }).exec();
+    const nextStory = await this.storyModel
+      .findOneAndUpdate({ _id }, dto, { new: true })
+      .exec();
+    if (nextStory.isCurrent) this.eventEmitter.emit(VotingEvent, nextStory);
+    return nextStory;
   }
 
   deleteOne(_id: string) {

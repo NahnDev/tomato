@@ -8,6 +8,7 @@ import { PlaningModule } from './planing/planing.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventModule } from './event/event.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ResourcesModule } from './resources/resources.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     AuthModule,
     PlaningModule,
     EventModule,
+    ResourcesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
