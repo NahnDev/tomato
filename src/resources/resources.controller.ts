@@ -9,6 +9,8 @@ import {
   UseInterceptors,
   Query,
   Put,
+  NotFoundException,
+  StreamableFile,
 } from '@nestjs/common';
 import { ResourcesService } from './resources.service';
 import { CreateResourceDto, UpdateResourceDto } from './dto/resource.dto';
@@ -21,6 +23,7 @@ import { User } from 'src/users/schemas/user.schema';
 import * as fs from 'fs';
 import { FileDto } from './dto/file.dto';
 import PathHelper from 'src/helpers/PathHelper';
+import { createReadStream } from 'fs';
 
 @UseJwtGuard()
 @Controller('resources')
@@ -66,7 +69,7 @@ export class ResourcesController {
 }
 
 @UseJwtGuard()
-@Controller('upload')
+@Controller('resource-files')
 export class UploadController {
   constructor(private readonly resourcesService: ResourcesService) {}
 
@@ -98,5 +101,15 @@ export class UploadController {
     dto.title = file.originalname;
 
     return this.resourcesService.uploadFile(dto, fileDto);
+  }
+
+  @Get(':id')
+  async getFile(@Param('id') _id: string): Promise<StreamableFile> {
+    const resource = await this.resourcesService.findOne(_id);
+    const isNotfound = !(resource && resource.file);
+    if (isNotfound) throw new NotFoundException();
+
+    const file = createReadStream(resource.file.path);
+    return new StreamableFile(file);
   }
 }
