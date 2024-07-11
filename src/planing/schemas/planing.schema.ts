@@ -35,6 +35,14 @@ export class Planing {
     default: [],
   })
   users: User[];
+
+  @Expose()
+  @Prop({ type: String, default: '#000000' })
+  color: string;
+
+  @Expose()
+  @Prop({ type: Number, default: Date.now })
+  createdAt: Date;
 }
 
 export type PlaningDocument = HydratedDocument<Planing>;

@@ -10,10 +10,12 @@ import { VotingService } from './voting/voting.service';
 import { VotingController } from './voting/voting.controller';
 import { PlaningGateway } from './planing.gateway';
 import { AuthModule } from 'src/auth/auth.module';
+import { ResourcesModule } from 'src/resources/resources.module';
 
 @Module({
   imports: [
     AuthModule,
+    ResourcesModule,
     MongooseModule.forFeature([{ name: Planing.name, schema: PlaningSchema }]),
     MongooseModule.forFeature([{ name: Story.name, schema: StorySchema }]),
   ],

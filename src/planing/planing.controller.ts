@@ -8,7 +8,11 @@ import {
   Put,
 } from '@nestjs/common';
 import { PlaningService } from './planing.service';
-import { CreatePlaningDto, UpdatePlaningDto } from './dto/planing.dto';
+import {
+  CreatePlaningDto,
+  ImportStoriesDto,
+  UpdatePlaningDto,
+} from './dto/planing.dto';
 import { RequestUser } from 'src/decorator/RequestUser';
 import { User } from 'src/users/schemas/user.schema';
 import { UseResponse } from 'src/decorator/UseResponse';
@@ -16,6 +20,7 @@ import { Planing } from './schemas/planing.schema';
 import { UseJwtGuard } from 'src/decorator/UseJwtGuard';
 import { VotingService } from './voting/voting.service';
 import UsePlaningEvent from './decorator/UsePlaningUserEvent';
+import { Story } from './schemas/story.schema';
 
 @UseJwtGuard()
 @Controller('planings')
@@ -56,5 +61,11 @@ export class PlaningController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.planingService.remove(id);
+  }
+
+  @Post(':id/import')
+  @UseResponse(Story)
+  import(@Param('id') id: string, @Body() dto: ImportStoriesDto) {
+    return this.planingService.importFromCsv(id, dto.resource, dto.column);
   }
 }

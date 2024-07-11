@@ -24,8 +24,8 @@ export class ResourcesService {
     return createdResource.save();
   }
 
-  findAllByDirectory(directory: string) {
-    return this.resourceModel.find({ directory }).exec();
+  findAllByDirectoryAndUser(directory: string, user: string) {
+    return this.resourceModel.find({ directory, user }).exec();
   }
 
   findOne(_id: string) {

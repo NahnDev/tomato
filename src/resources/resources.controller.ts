@@ -43,8 +43,8 @@ export class ResourcesController {
 
   @Get()
   @UseResponse(Resource)
-  findAll(@Query('directory') directory: string) {
-    return this.resourcesService.findAllByDirectory(directory);
+  findAll(@Query('directory') directory: string, @RequestUser() user: User) {
+    return this.resourcesService.findAllByDirectoryAndUser(directory, user._id);
   }
 
   @Get(':id')

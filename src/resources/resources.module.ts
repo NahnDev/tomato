@@ -4,6 +4,8 @@ import { ResourcesController, UploadController } from './resources.controller';
 import { LocalFile, LocalFileSchema } from './schemas/file.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Resource, ResourceSchema } from './schemas/resource.schema';
+import { CsvController } from './csv/csv.controller';
+import { CsvService } from './csv/csv.service';
 
 @Module({
   imports: [
@@ -30,7 +32,8 @@ import { Resource, ResourceSchema } from './schemas/resource.schema';
       },
     ]),
   ],
-  controllers: [ResourcesController, UploadController],
-  providers: [ResourcesService],
+  controllers: [ResourcesController, UploadController, CsvController],
+  providers: [ResourcesService, CsvService],
+  exports: [ResourcesService, CsvService],
 })
 export class ResourcesModule {}

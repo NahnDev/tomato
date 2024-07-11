@@ -34,6 +34,13 @@ export class StoryService {
     return new this.storyModel({ ...dto, order }).save();
   }
 
+  async createMany(planing: string, titles: CreateStoryDto['title'][]) {
+    const order = await this.storyModel.countDocuments({ planing }).exec();
+    return this.storyModel.insertMany(
+      titles.map((title, index) => ({ title, planing, order: order + index })),
+    );
+  }
+
   find(_id: string) {
     return this.storyModel.find({ _id }).exec();
   }

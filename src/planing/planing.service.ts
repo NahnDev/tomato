@@ -6,6 +6,8 @@ import { Planing } from './schemas/planing.schema';
 import { StoryService } from './story/story.service';
 import { PlaningEvent } from './decorator/UsePlaningUserEvent';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CsvService } from 'src/resources/csv/csv.service';
+import { ResourcesService } from 'src/resources/resources.service';
 
 @Injectable()
 export class PlaningService {
@@ -13,14 +15,17 @@ export class PlaningService {
     @InjectModel(Planing.name) private planingModel: Model<Planing>,
     private readonly storyService: StoryService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly csvService: CsvService,
+    private readonly resourcesService: ResourcesService,
   ) {}
   create(createPlaningDto: CreatePlaningDto) {
-    const planing = new this.planingModel(createPlaningDto);
+    const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    const planing = new this.planingModel({ ...createPlaningDto, color });
     return planing.save();
   }
 
   findAll() {
-    return this.planingModel.find().exec();
+    return this.planingModel.find().sort({ createAt: -1 }).exec();
   }
 
   findOne(_id: string) {
@@ -52,5 +57,11 @@ export class PlaningService {
       { new: true },
     );
     this.eventEmitter.emit(PlaningEvent, planing);
+  }
+
+  async importFromCsv(_id: string, resourceId: string, column: string) {
+    const resource = await this.resourcesService.findOne(resourceId);
+    const data = await this.csvService.getColumns(resource, column);
+    return this.storyService.createMany(_id, data as string[]);
   }
 }

@@ -26,3 +26,11 @@ export class AddVotingDto {
   @IsNumber()
   value: number;
 }
+
+export class ImportStoriesDto {
+  @IsString()
+  column: string;
+
+  @IsString()
+  resource: string;
+}
