@@ -25,15 +25,15 @@ export class UsersService {
     return this.userModel.find();
   }
 
-  findOne(id: string) {
-    return this.userModel.findById(id);
+  findOne(_id: string) {
+    return this.userModel.findById(_id);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(_id: string, updateUserDto: UpdateUserDto) {
     if (updateUserDto.password) {
       updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 10);
     }
-    return this.userModel.findByIdAndUpdate(id, updateUserDto);
+    return this.userModel.findByIdAndUpdate(_id, updateUserDto);
   }
 
   remove(id: number) {

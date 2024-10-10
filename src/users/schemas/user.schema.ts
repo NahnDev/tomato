@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Expose, Transform } from 'class-transformer';
 import { HydratedDocument } from 'mongoose';
+import * as autopopulate from 'mongoose-autopopulate';
 
 @Schema()
 export class User {
@@ -13,6 +14,10 @@ export class User {
   name: string;
 
   @Expose()
+  @Prop({ type: String })
+  avatar: string;
+
+  @Expose()
   @Prop({ required: true, type: String, unique: true })
   mail: string;
 
@@ -21,7 +26,9 @@ export class User {
   password: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(User).plugin(
+  autopopulate as any,
+);
 UserSchema.index(
   { mail: 1 },
   { unique: true, partialFilterExpression: { mail: { $ne: null } } },
